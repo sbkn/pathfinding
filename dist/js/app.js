@@ -85,6 +85,9 @@
 			new _initEs62["default"]();
 			this.map = new _mapEs62["default"]();
 			var spawnLocation = this.map.findSpawnLocation(this.map.matrix);
+			console.log("Spawn Loc:");
+			console.log(spawnLocation);
+			console.log(this.map.matrix[spawnLocation[0]][spawnLocation[1]]);
 			this.draw = new _drawEs62["default"]();
 			this.unit = new _unitEs62["default"](spawnLocation[0], spawnLocation[1]);
 	    }
@@ -214,10 +217,8 @@
 				for (var i = 0; i < 25; i++) {
 					for (var j = 0; j < 25; j++) {
 						if (map[i][j] == 1) {
-							//this.ctx.beginPath();
 							this.ctx.fillStyle = '#6d6359';
-							this.ctx.fillRect(i * 32, j * 32, i * 32, j * 32);
-							//this.ctx.closePath();
+							this.ctx.fillRect(i * 32, j * 32, 32, 32);
 						}
 					}
 				}
@@ -322,7 +323,6 @@
 					for (var j = 0; j < 25; j++) {
 						this.matrix[i][j] = 0;
 					}
-					console.log(this.matrix[i]);
 				}
 				//this.randomInteger = this.getRandomInt(0, 25);
 				console.log("Randomized matrix:");
@@ -332,15 +332,9 @@
 							this.matrix[i][j] = 1;
 						}
 					}
-					console.log(this.matrix[i]);
 				}
-
-				for (var i = 0; i < 1; i++) {
+				for (var i = 0; i < 5; i++) {
 					this.cellularAutomata(this.matrix);
-				}
-				console.log("After:");
-				for (var i = 0; i < 25; i++) {
-					console.log(this.matrix[i]);
 				}
 			}
 
@@ -384,7 +378,7 @@
 										}
 									}
 								}
-								if (cnt > 5) {
+								if (cnt >= 5) {
 									matrix[i][j] = 1;
 								}
 							}
@@ -395,7 +389,7 @@
 				key: "findSpawnLocation",
 				value: function findSpawnLocation(map) {
 					var i, x, y;
-					//TODO TOP LEL
+					//TODO: TOP LEL
 					for (i = 0; i < 100; i++) {
 						x = this.getRandomInt(0, 24);
 						y = this.getRandomInt(0, 24);
@@ -403,6 +397,7 @@
 							return [x, y];
 						}
 					}
+					return [0, 0];
 				}
 			}, {
 				key: "getRandomInt",

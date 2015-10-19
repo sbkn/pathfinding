@@ -13,6 +13,9 @@ export default class App {
         new Init();
         this.map = new Map();
         var spawnLocation = this.map.findSpawnLocation(this.map.matrix);
+        console.log("Spawn Loc:");
+        console.log(spawnLocation);
+        console.log(this.map.matrix[spawnLocation[0]][spawnLocation[1]]);
         this.draw = new Draw();
         this.unit = new Unit(spawnLocation[0], spawnLocation[1]);
     }

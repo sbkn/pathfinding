@@ -7,7 +7,6 @@ export default class Map {
             for (var j = 0; j < 25; j++) {
                 this.matrix[i][j] = 0;
             }
-            console.log(this.matrix[i]);
         }
         //this.randomInteger = this.getRandomInt(0, 25);
         console.log("Randomized matrix:");
@@ -17,15 +16,9 @@ export default class Map {
                     this.matrix[i][j] = 1;
                 }
             }
-            console.log(this.matrix[i]);
         }
-
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < 5; i++) {
             this.cellularAutomata(this.matrix);
-        }
-        console.log("After:");
-        for (var i = 0; i < 25; i++) {
-            console.log(this.matrix[i]);
         }
     }
 
@@ -67,7 +60,7 @@ export default class Map {
                             }
                         }
                     }
-                    if (cnt > 5) {
+                    if (cnt >= 5) {
                         matrix[i][j] = 1;
                     }
                 }
@@ -77,7 +70,7 @@ export default class Map {
 
     findSpawnLocation(map) {
         var i, x, y;
-        //TODO TOP LEL
+        //TODO: TOP LEL
         for (i = 0; i < 100; i++) {
             x = this.getRandomInt(0, 24);
             y = this.getRandomInt(0, 24);
@@ -85,6 +78,7 @@ export default class Map {
                 return [x, y];
             }
         }
+        return [0, 0];
     }
 
     getRandomInt(min, max) {
