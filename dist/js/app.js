@@ -64,11 +64,14 @@
 
 	var _drawEs62 = _interopRequireDefault(_drawEs6);
 
+	var _unitEs6 = __webpack_require__(3);
+
+	var _unitEs62 = _interopRequireDefault(_unitEs6);
+
 	var App = (function () {
 
 	    /**
-	     *
-	     *
+	     * Empty for now
 	     * @constructor App
 	     */
 
@@ -77,7 +80,7 @@
 	    }
 
 	    /**
-	     *
+	     * Run it!
 	     */
 
 	    _createClass(App, [{
@@ -85,6 +88,8 @@
 	        value: function run() {
 	            new _initEs62["default"]().init();
 	            new _drawEs62["default"]().init();
+	            var unit = new _unitEs62["default"](8, 8);
+	            unit.draw();
 	        }
 	    }]);
 
@@ -168,13 +173,13 @@
 	        value: function init() {
 	            this.canvas = document.getElementById("gameCanvas");
 	            this.ctx = this.canvas.getContext("2d");
-	            this.drawBoard();
+	            this.drawGrid();
 
 	            console.log("Draw init done.");
 	        }
 	    }, {
-	        key: "drawBoard",
-	        value: function drawBoard() {
+	        key: "drawGrid",
+	        value: function drawGrid() {
 	            var x = undefined;
 
 	            // draw vertical lines:
@@ -198,6 +203,49 @@
 	})();
 
 	exports["default"] = Draw;
+	module.exports = exports["default"];
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Unit = (function () {
+	    function Unit(x, y) {
+	        _classCallCheck(this, Unit);
+
+	        this.canvas = document.getElementById("gameCanvas");
+	        this.ctx = this.canvas.getContext("2d");
+	        this.x = x * 32 - 16;
+	        this.y = y * 32 - 16;
+	    }
+
+	    _createClass(Unit, [{
+	        key: "draw",
+	        value: function draw() {
+	            this.ctx.beginPath();
+	            this.ctx.arc(this.x, this.y, 16, 0, 2 * Math.PI, false);
+	            this.ctx.fillStyle = 'green';
+	            this.ctx.fill();
+	            this.ctx.lineWidth = 2;
+	            this.ctx.strokeStyle = '#003300';
+	            this.ctx.stroke();
+	        }
+	    }]);
+
+	    return Unit;
+	})();
+
+	exports["default"] = Unit;
 	module.exports = exports["default"];
 
 /***/ }
