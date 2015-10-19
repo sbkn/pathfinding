@@ -394,19 +394,21 @@
 			}, {
 				key: "findSpawnLocation",
 				value: function findSpawnLocation(map) {
-					var i, j;
-					for (i = 0; i < 25; i++) {
-						for (j = 0; j < 25; j++) {
-							if (map[i][j] == 0) {
-								return [i, j];
-							}
+					var i, x, y;
+					//TODO TOP LEL
+					for (i = 0; i < 100; i++) {
+						x = this.getRandomInt(0, 24);
+						y = this.getRandomInt(0, 24);
+						if (map[x][y] == 0) {
+							return [x, y];
 						}
 					}
 				}
-
-				/*getRandomInt(min, max) {
-				 return Math.floor(Math.random() * (max - min + 1)) + min;
-				 }*/
+			}, {
+				key: "getRandomInt",
+				value: function getRandomInt(min, max) {
+					return Math.floor(Math.random() * (max - min + 1)) + min;
+				}
 			}]);
 
 			return Map;
