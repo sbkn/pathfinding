@@ -1,0 +1,29 @@
+{
+  "name": "pathfinding",
+  "version": "0.0.1",
+  "description": "A pathfinder! With Ghosts!",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sergey Bakin",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sbkn/pathfinding.git"
+  },
+  "dependencies": {
+    "babel-core": "^5.8.25",
+    "babel-loader": "^5.3.2",
+    "grunt": "^0.4.5",
+    "grunt-contrib-uglify": "^0.9.2",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-esdoc": "0.0.1",
+    "grunt-eslint": "^17.2.0",
+    "grunt-shell": "^1.1.2",
+    "grunt-webpack": "^1.0.11",
+    "mocha": "^2.3.3",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.0"
+  }
+}
