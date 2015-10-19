@@ -2,6 +2,7 @@ import Init from "./init.es6";
 import Draw from "./draw.es6";
 import Unit from "./unit.es6";
 import Map from "./map.es6";
+import Input from "./input.es6";
 
 export default class App {
 
@@ -10,12 +11,11 @@ export default class App {
      * @constructor App
      */
     constructor() {
+        this.canvas = document.getElementById("gameCanvas");
         new Init();
-        this.map = new Map();
+        this.map = new Map(this.canvas.width / 32, this.canvas.height / 32);
+        new Input();
         var spawnLocation = this.map.findSpawnLocation(this.map.matrix);
-        console.log("Spawn Loc:");
-        console.log(spawnLocation);
-        console.log(this.map.matrix[spawnLocation[0]][spawnLocation[1]]);
         this.draw = new Draw();
         this.unit = new Unit(spawnLocation[0], spawnLocation[1]);
     }

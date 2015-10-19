@@ -13,8 +13,8 @@ export default class Init {
      * Resize the canvas when needed:
      */
     resizeCanvas() {
-        window.innerWidth <= 800 ? this.canvas.width = window.innerWidth : this.canvas.width = 800;
-        window.innerHeight <= 640 ? this.canvas.height = window.innerHeight : this.canvas.height = 640;
+        window.innerWidth <= 800 ? document.getElementById("gameCanvas").width = window.innerWidth : document.getElementById("gameCanvas").width = 800;
+        window.innerHeight <= 640 ? document.getElementById("gameCanvas").height = window.innerHeight : document.getElementById("gameCanvas").height = 640;
     }
 
 }

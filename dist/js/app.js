@@ -72,6 +72,10 @@
 
 		var _mapEs62 = _interopRequireDefault(_mapEs6);
 
+		var _inputEs6 = __webpack_require__(5);
+
+		var _inputEs62 = _interopRequireDefault(_inputEs6);
+
 	var App = (function () {
 
 	    /**
@@ -82,12 +86,11 @@
 	    function App() {
 	        _classCallCheck(this, App);
 
+			this.canvas = document.getElementById("gameCanvas");
 			new _initEs62["default"]();
-			this.map = new _mapEs62["default"]();
+			this.map = new _mapEs62["default"](this.canvas.width / 32, this.canvas.height / 32);
+			new _inputEs62["default"]();
 			var spawnLocation = this.map.findSpawnLocation(this.map.matrix);
-			console.log("Spawn Loc:");
-			console.log(spawnLocation);
-			console.log(this.map.matrix[spawnLocation[0]][spawnLocation[1]]);
 			this.draw = new _drawEs62["default"]();
 			this.unit = new _unitEs62["default"](spawnLocation[0], spawnLocation[1]);
 	    }
@@ -158,8 +161,8 @@
 		_createClass(Init, [{
 	        key: "resizeCanvas",
 	        value: function resizeCanvas() {
-	            window.innerWidth <= 800 ? this.canvas.width = window.innerWidth : this.canvas.width = 800;
-	            window.innerHeight <= 640 ? this.canvas.height = window.innerHeight : this.canvas.height = 640;
+				window.innerWidth <= 800 ? document.getElementById("gameCanvas").width = window.innerWidth : document.getElementById("gameCanvas").width = 800;
+				window.innerHeight <= 640 ? document.getElementById("gameCanvas").height = window.innerHeight : document.getElementById("gameCanvas").height = 640;
 	        }
 	    }]);
 
@@ -313,22 +316,24 @@
 		}
 
 		var Map = (function () {
-			function Map() {
+			function Map(width, height) {
 				_classCallCheck(this, Map);
 
+				this.width = width;
+				this.height = height;
 				this.matrix = [];
 				console.log("Initial matrix:");
-				for (var i = 0; i < 25; i++) {
+				for (var i = 0; i < this.width; i++) {
 					this.matrix[i] = [];
-					for (var j = 0; j < 25; j++) {
+					for (var j = 0; j < this.height; j++) {
 						this.matrix[i][j] = 0;
 					}
 				}
 				//this.randomInteger = this.getRandomInt(0, 25);
 				console.log("Randomized matrix:");
-				for (var i = 0; i < 25; i++) {
-					for (var j = 0; j < 25; j++) {
-						if (Math.random() >= 0.55) {
+				for (var i = 0; i < this.width; i++) {
+					for (var j = 0; j < this.height; j++) {
+						if (Math.random() >= 0.5) {
 							this.matrix[i][j] = 1;
 						}
 					}
@@ -343,8 +348,8 @@
 				value: function cellularAutomata(matrix) {
 					var cnt;
 					var x, y;
-					for (var i = 0; i < 25; i++) {
-						for (var j = 0; j < 25; j++) {
+					for (var i = 0; i < this.width; i++) {
+						for (var j = 0; j < this.height; j++) {
 							if (matrix[i][j] == 1) {
 								cnt = 0;
 								for (x = -1; x <= 1; x++) {
@@ -352,7 +357,7 @@
 										if (x == 0 && y == 0) {
 											continue;
 										}
-										if (i + x < 0 || i + x >= 25 || j + y < 0 || j + y >= 25) {
+										if (i + x < 0 || i + x >= this.width || j + y < 0 || j + y >= this.height) {
 											continue;
 										}
 										if (matrix[i + x][j + y] == 1) {
@@ -370,7 +375,7 @@
 										if (x == 0 && y == 0) {
 											continue;
 										}
-										if (i + x < 0 || i + x >= 25 || j + y < 0 || j + y >= 25) {
+										if (i + x < 0 || i + x >= this.width || j + y < 0 || j + y >= this.height) {
 											continue;
 										}
 										if (matrix[i + x][j + y] == 1) {
@@ -391,8 +396,8 @@
 					var i, x, y;
 					//TODO: TOP LEL
 					for (i = 0; i < 100; i++) {
-						x = this.getRandomInt(0, 24);
-						y = this.getRandomInt(0, 24);
+						x = this.getRandomInt(0, this.width - 1);
+						y = this.getRandomInt(0, this.height - 1);
 						if (map[x][y] == 0) {
 							return [x, y];
 						}
@@ -410,6 +415,67 @@
 		})();
 
 		exports["default"] = Map;
+		module.exports = exports["default"];
+
+		/***/
+	},
+	/* 5 */
+	/***/ function (module, exports) {
+
+		"use strict";
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = (function () {
+			function defineProperties(target, props) {
+				for (var i = 0; i < props.length; i++) {
+					var descriptor = props[i];
+					descriptor.enumerable = descriptor.enumerable || false;
+					descriptor.configurable = true;
+					if ("value" in descriptor) descriptor.writable = true;
+					Object.defineProperty(target, descriptor.key, descriptor);
+				}
+			}
+
+			return function (Constructor, protoProps, staticProps) {
+				if (protoProps) defineProperties(Constructor.prototype, protoProps);
+				if (staticProps) defineProperties(Constructor, staticProps);
+				return Constructor;
+			};
+		})();
+
+		function _classCallCheck(instance, Constructor) {
+			if (!(instance instanceof Constructor)) {
+				throw new TypeError("Cannot call a class as a function");
+			}
+		}
+
+		var Input = (function () {
+			function Input() {
+				_classCallCheck(this, Input);
+
+				this.canvas = document.getElementById("gameCanvas");
+				this.canvas.addEventListener("click", this.clickHandler, false);
+
+				this.clickX = 0;
+				this.clickY = 0;
+			}
+
+			_createClass(Input, [{
+				key: "clickHandler",
+				value: function clickHandler(e) {
+					this.clickX = e.pageX - (window.innerWidth - document.getElementById("gameCanvas").width) / 2;
+					this.clickY = e.pageY;
+					console.log(this.clickX, this.clickY);
+				}
+			}]);
+
+			return Input;
+		})();
+
+		exports["default"] = Input;
 	module.exports = exports["default"];
 
 /***/ }
