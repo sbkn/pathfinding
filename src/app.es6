@@ -12,8 +12,9 @@ export default class App {
     constructor() {
         new Init();
         this.map = new Map();
+        var spawnLocation = this.map.findSpawnLocation(this.map.matrix);
         this.draw = new Draw();
-        this.unit = new Unit(8, 8);
+        this.unit = new Unit(spawnLocation[0], spawnLocation[1]);
     }
 
     /**
@@ -27,7 +28,7 @@ export default class App {
         this.draw.drawObstacles(this.map.matrix);
         this.draw.drawGrid();
         this.unit.draw();
-        //requestAnimationFrame(this.drawingLoop);
+
         requestAnimationFrame(() => {
             this.drawingLoop();
         });

@@ -13,14 +13,14 @@ export default class Map {
         console.log("Randomized matrix:");
         for (var i = 0; i < 25; i++) {
             for (var j = 0; j < 25; j++) {
-                if (Math.random() > 0.5) {
+                if (Math.random() >= 0.55) {
                     this.matrix[i][j] = 1;
                 }
             }
             console.log(this.matrix[i]);
         }
 
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 1; i++) {
             this.cellularAutomata(this.matrix);
         }
         console.log("After:");
@@ -67,7 +67,7 @@ export default class Map {
                             }
                         }
                     }
-                    if (cnt >= 5) {
+                    if (cnt > 5) {
                         matrix[i][j] = 1;
                     }
                 }
@@ -75,6 +75,16 @@ export default class Map {
         }
     }
 
+    findSpawnLocation(map) {
+        var i, j;
+        for (i = 0; i < 25; i++) {
+            for (j = 0; j < 25; j++) {
+                if (map[i][j] == 0) {
+                    return [i, j];
+                }
+            }
+        }
+    }
 
     /*getRandomInt(min, max) {
      return Math.floor(Math.random() * (max - min + 1)) + min;
