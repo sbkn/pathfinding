@@ -1,5 +1,5 @@
 export default class Pathfinding {
-    constructor() {
+    constructor(map, unit) {
 
     }
 }

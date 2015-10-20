@@ -12,8 +12,6 @@ export default class Unit {
 
         this.destX = this.canvas.width / 32 - this.x;
         this.destY = this.canvas.height / 32 - this.y;
-
-        console.log(this.x, this.y, this.destX, this.destY);
     }
 
     draw() {
