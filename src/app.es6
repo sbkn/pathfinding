@@ -12,13 +12,13 @@ export default class App {
      */
     constructor() {
         this.canvas = document.getElementById("gameCanvas");
+        this.ctx = this.canvas.getContext("2d");
+
         new Init();
         this.map = new Map(this.canvas.width / 32, this.canvas.height / 32);
         new Input();
-        // TODO: make the findSpawnLocation func a Unit method aka let him find a spawn pt on himself
-        var spawnLocation = this.map.findFreeNode(this.map.matrix);
         this.draw = new Draw();
-        this.unit = new Unit(spawnLocation[0], spawnLocation[1]);
+        this.unit = new Unit(this.map);
     }
 
     /**
@@ -29,8 +29,11 @@ export default class App {
     }
 
     drawingLoop() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
         this.draw.drawObstacles(this.map.matrix);
         this.draw.drawGrid();
+        this.unit.move();
         this.unit.draw();
 
         requestAnimationFrame(() => {

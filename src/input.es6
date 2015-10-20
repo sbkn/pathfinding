@@ -10,6 +10,6 @@ export default class Input {
     clickHandler(e) {
         this.clickX = e.pageX - (window.innerWidth - document.getElementById("gameCanvas").width) / 2;
         this.clickY = e.pageY;
-        console.log(this.clickX, this.clickY);
+        //console.log(this.clickX, this.clickY);
     }
 }

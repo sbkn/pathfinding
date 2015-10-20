@@ -87,13 +87,13 @@
 	        _classCallCheck(this, App);
 
 			this.canvas = document.getElementById("gameCanvas");
+			this.ctx = this.canvas.getContext("2d");
+
 			new _initEs62["default"]();
 			this.map = new _mapEs62["default"](this.canvas.width / 32, this.canvas.height / 32);
 			new _inputEs62["default"]();
-			// TODO: make the findSpawnLocation func a Unit method aka let him find a spawn pt on himself
-			var spawnLocation = this.map.findFreeNode(this.map.matrix);
 			this.draw = new _drawEs62["default"]();
-			this.unit = new _unitEs62["default"](spawnLocation[0], spawnLocation[1]);
+			this.unit = new _unitEs62["default"](this.map);
 	    }
 
 	    /**
@@ -110,8 +110,11 @@
 			value: function drawingLoop() {
 				var _this = this;
 
+				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
 				this.draw.drawObstacles(this.map.matrix);
 				this.draw.drawGrid();
+				this.unit.move();
 				this.unit.draw();
 
 				requestAnimationFrame(function () {
@@ -250,25 +253,30 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Unit = (function () {
-	    function Unit(x, y) {
+		function Unit(map) {
 	        _classCallCheck(this, Unit);
 
 	        this.canvas = document.getElementById("gameCanvas");
 	        this.ctx = this.canvas.getContext("2d");
+
 			// place the unit at the right position
-			// TODO: DO NOT HARDCODE THE GRID SIZE!
-			this.x = x * 32 + 16;
-			this.y = y * 32 + 16;
+			var spawnLocation = map.findFreeNode();
+			this.x = spawnLocation[0];
+			this.y = spawnLocation[1];
+
+			this.ms = 1;
 
 			this.destX = this.canvas.width / 32 - this.x;
 			this.destY = this.canvas.height / 32 - this.y;
+
+			console.log(this.x, this.y, this.destX, this.destY);
 	    }
 
 	    _createClass(Unit, [{
 	        key: "draw",
 	        value: function draw() {
 	            this.ctx.beginPath();
-	            this.ctx.arc(this.x, this.y, 16, 0, 2 * Math.PI, false);
+				this.ctx.arc(this.x * 32 + 16, this.y * 32 + 16, 16, 0, 2 * Math.PI, false);
 				this.ctx.fillStyle = '#ff0000';
 	            this.ctx.fill();
 	            this.ctx.lineWidth = 2;
@@ -278,7 +286,26 @@
 		}, {
 			key: "move",
 			value: function move() {
-				// TODO: implement a move function
+				var dirX = 0;
+				var dirY = 0;
+
+				if (this.destX == this.x) {
+					dirX = 0;
+					this.destX = this.canvas.width / 32 - this.x;
+				} else {
+					this.destX - this.x < 0 ? dirX = -1 : dirX = 1;
+				}
+				if (this.destY == this.y) {
+					dirY = 0;
+					this.destY = this.canvas.width / 32 - this.y;
+				} else {
+					this.destY - this.y < 0 ? dirY = -1 : dirY = 1;
+				}
+
+				this.x = this.x + dirX * this.ms;
+				this.y = this.y + dirY * this.ms;
+
+				//console.log(this.x, this.y);
 			}
 	    }]);
 
@@ -398,13 +425,13 @@
 				}
 			}, {
 				key: "findFreeNode",
-				value: function findFreeNode(map) {
+				value: function findFreeNode() {
 					var i, x, y;
 					//TODO: TOP LEL
 					for (i = 0; i < 100; i++) {
 						x = this.getRandomInt(0, this.width - 1);
 						y = this.getRandomInt(0, this.height - 1);
-						if (map[x][y] == 0) {
+						if (this.matrix[x][y] == 0) {
 							return [x, y];
 						}
 					}
@@ -474,7 +501,7 @@
 				value: function clickHandler(e) {
 					this.clickX = e.pageX - (window.innerWidth - document.getElementById("gameCanvas").width) / 2;
 					this.clickY = e.pageY;
-					console.log(this.clickX, this.clickY);
+					//console.log(this.clickX, this.clickY);
 				}
 			}]);
 

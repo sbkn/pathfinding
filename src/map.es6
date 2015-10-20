@@ -68,13 +68,13 @@ export default class Map {
         }
     }
 
-    findFreeNode(map) {
+    findFreeNode() {
         var i, x, y;
         //TODO: TOP LEL
         for (i = 0; i < 100; i++) {
             x = this.getRandomInt(0, this.width - 1);
             y = this.getRandomInt(0, this.height - 1);
-            if (map[x][y] == 0) {
+            if (this.matrix[x][y] == 0) {
                 return [x, y];
             }
         }
