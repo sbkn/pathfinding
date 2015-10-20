@@ -19,9 +19,9 @@ export default class App {
         new Init();
         this.map = new Map(this.canvas.width / 32, this.canvas.height / 32);
         new Input();
-        this.pathfinder = new Pathfinding(this.map);
         this.draw = new Draw();
         this.unit = new Unit(this.map);
+        this.pathfinder = new Pathfinding(this.map, this.unit);
     }
 
     /**
