@@ -15,7 +15,8 @@ export default class App {
         new Init();
         this.map = new Map(this.canvas.width / 32, this.canvas.height / 32);
         new Input();
-        var spawnLocation = this.map.findSpawnLocation(this.map.matrix);
+        // TODO: make the findSpawnLocation func a Unit method aka let him find a spawn pt on himself
+        var spawnLocation = this.map.findFreeNode(this.map.matrix);
         this.draw = new Draw();
         this.unit = new Unit(spawnLocation[0], spawnLocation[1]);
     }

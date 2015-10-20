@@ -3,15 +3,13 @@ export default class Map {
         this.width = width;
         this.height = height;
         this.matrix = [];
-        console.log("Initial matrix:");
+
         for (var i = 0; i < this.width; i++) {
             this.matrix[i] = [];
             for (var j = 0; j < this.height; j++) {
                 this.matrix[i][j] = 0;
             }
         }
-        //this.randomInteger = this.getRandomInt(0, 25);
-        console.log("Randomized matrix:");
         for (var i = 0; i < this.width; i++) {
             for (var j = 0; j < this.height; j++) {
                 if (Math.random() >= 0.5) {
@@ -70,7 +68,7 @@ export default class Map {
         }
     }
 
-    findSpawnLocation(map) {
+    findFreeNode(map) {
         var i, x, y;
         //TODO: TOP LEL
         for (i = 0; i < 100; i++) {

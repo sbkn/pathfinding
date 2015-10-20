@@ -90,7 +90,8 @@
 			new _initEs62["default"]();
 			this.map = new _mapEs62["default"](this.canvas.width / 32, this.canvas.height / 32);
 			new _inputEs62["default"]();
-			var spawnLocation = this.map.findSpawnLocation(this.map.matrix);
+			// TODO: make the findSpawnLocation func a Unit method aka let him find a spawn pt on himself
+			var spawnLocation = this.map.findFreeNode(this.map.matrix);
 			this.draw = new _drawEs62["default"]();
 			this.unit = new _unitEs62["default"](spawnLocation[0], spawnLocation[1]);
 	    }
@@ -254,11 +255,13 @@
 
 	        this.canvas = document.getElementById("gameCanvas");
 	        this.ctx = this.canvas.getContext("2d");
-
 			// place the unit at the right position
 			// TODO: DO NOT HARDCODE THE GRID SIZE!
 			this.x = x * 32 + 16;
 			this.y = y * 32 + 16;
+
+			this.destX = this.canvas.width / 32 - this.x;
+			this.destY = this.canvas.height / 32 - this.y;
 	    }
 
 	    _createClass(Unit, [{
@@ -272,6 +275,11 @@
 	            this.ctx.strokeStyle = '#003300';
 	            this.ctx.stroke();
 	        }
+		}, {
+			key: "move",
+			value: function move() {
+				// TODO: implement a move function
+			}
 	    }]);
 
 	    return Unit;
@@ -322,15 +330,13 @@
 				this.width = width;
 				this.height = height;
 				this.matrix = [];
-				console.log("Initial matrix:");
+
 				for (var i = 0; i < this.width; i++) {
 					this.matrix[i] = [];
 					for (var j = 0; j < this.height; j++) {
 						this.matrix[i][j] = 0;
 					}
 				}
-				//this.randomInteger = this.getRandomInt(0, 25);
-				console.log("Randomized matrix:");
 				for (var i = 0; i < this.width; i++) {
 					for (var j = 0; j < this.height; j++) {
 						if (Math.random() >= 0.5) {
@@ -391,8 +397,8 @@
 					}
 				}
 			}, {
-				key: "findSpawnLocation",
-				value: function findSpawnLocation(map) {
+				key: "findFreeNode",
+				value: function findFreeNode(map) {
 					var i, x, y;
 					//TODO: TOP LEL
 					for (i = 0; i < 100; i++) {
