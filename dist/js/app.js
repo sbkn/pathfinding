@@ -76,6 +76,10 @@
 
 		var _inputEs62 = _interopRequireDefault(_inputEs6);
 
+		var _pathfindingEs6 = __webpack_require__(6);
+
+		var _pathfindingEs62 = _interopRequireDefault(_pathfindingEs6);
+
 	var App = (function () {
 
 	    /**
@@ -94,6 +98,7 @@
 			new _inputEs62["default"]();
 			this.draw = new _drawEs62["default"]();
 			this.unit = new _unitEs62["default"](this.map);
+			this.pathfinder = new _pathfindingEs62["default"](this.map, this.unit);
 	    }
 
 	    /**
@@ -268,8 +273,6 @@
 
 			this.destX = this.canvas.width / 32 - this.x;
 			this.destY = this.canvas.height / 32 - this.y;
-
-			console.log(this.x, this.y, this.destX, this.destY);
 	    }
 
 	    _createClass(Unit, [{
@@ -509,6 +512,30 @@
 		})();
 
 		exports["default"] = Input;
+		module.exports = exports["default"];
+
+		/***/
+	},
+	/* 6 */
+	/***/ function (module, exports) {
+
+		"use strict";
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		function _classCallCheck(instance, Constructor) {
+			if (!(instance instanceof Constructor)) {
+				throw new TypeError("Cannot call a class as a function");
+			}
+		}
+
+		var Pathfinding = function Pathfinding(map, unit) {
+			_classCallCheck(this, Pathfinding);
+		};
+
+		exports["default"] = Pathfinding;
 	module.exports = exports["default"];
 
 /***/ }

@@ -4,7 +4,7 @@ export default class Unit {
         this.ctx = this.canvas.getContext("2d");
 
         // place the unit at the right position
-        var spawnLocation = map.findFreeNode();
+        let spawnLocation = map.findFreeNode();
         this.x = spawnLocation[0];
         this.y = spawnLocation[1];
 
