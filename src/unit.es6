@@ -43,11 +43,22 @@ export default class Unit {
     draw() {
         this.ctx.beginPath();
         this.ctx.arc(this.x * 32 + 16, this.y * 32 + 16, 16, 0, 2 * Math.PI, false);
-        this.ctx.fillStyle = '#ff0000';
+        this.ctx.fillStyle = '#14820d';
         this.ctx.fill();
         this.ctx.lineWidth = 2;
         this.ctx.strokeStyle = '#003300';
         this.ctx.stroke();
+
+        //TODO This is experimental:
+        if (!(this.x == this.destX && this.y == this.destY)) {
+            this.ctx.beginPath();
+            this.ctx.arc(this.destX * 32 + 16, this.destY * 32 + 16, 16, 0, 2 * Math.PI, false);
+            this.ctx.fillStyle = '#ff0000';
+            this.ctx.fill();
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeStyle = '#003300';
+            this.ctx.stroke();
+        }
     }
 
     // move it along its path

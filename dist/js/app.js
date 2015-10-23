@@ -127,6 +127,7 @@
 	            this.draw.drawGrid();
 	            //this.unit.move();
 	            this.unit.draw();
+				this.unit.route.drawAll();
 
 	            requestAnimationFrame(function () {
 	                _this.drawingLoop();
@@ -320,11 +321,22 @@
 	        value: function draw() {
 	            this.ctx.beginPath();
 	            this.ctx.arc(this.x * 32 + 16, this.y * 32 + 16, 16, 0, 2 * Math.PI, false);
-	            this.ctx.fillStyle = '#ff0000';
+				this.ctx.fillStyle = '#14820d';
 	            this.ctx.fill();
 	            this.ctx.lineWidth = 2;
 	            this.ctx.strokeStyle = '#003300';
 	            this.ctx.stroke();
+
+				//TODO This is experimental:
+				if (!(this.x == this.destX && this.y == this.destY)) {
+					this.ctx.beginPath();
+					this.ctx.arc(this.destX * 32 + 16, this.destY * 32 + 16, 16, 0, 2 * Math.PI, false);
+					this.ctx.fillStyle = '#ff0000';
+					this.ctx.fill();
+					this.ctx.lineWidth = 2;
+					this.ctx.strokeStyle = '#003300';
+					this.ctx.stroke();
+				}
 	        }
 
 	        // move it along its path
@@ -419,6 +431,24 @@
 	    value: true
 	});
 
+		var _createClass = (function () {
+			function defineProperties(target, props) {
+				for (var i = 0; i < props.length; i++) {
+					var descriptor = props[i];
+					descriptor.enumerable = descriptor.enumerable || false;
+					descriptor.configurable = true;
+					if ("value" in descriptor) descriptor.writable = true;
+					Object.defineProperty(target, descriptor.key, descriptor);
+				}
+			}
+
+			return function (Constructor, protoProps, staticProps) {
+				if (protoProps) defineProperties(Constructor.prototype, protoProps);
+				if (staticProps) defineProperties(Constructor, staticProps);
+				return Constructor;
+			};
+		})();
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -427,13 +457,42 @@
 
 	var _nodeEs62 = _interopRequireDefault(_nodeEs6);
 
-	var Route = function Route() {
-	    _classCallCheck(this, Route);
+		var Route = (function () {
+			function Route() {
+				_classCallCheck(this, Route);
 
-	    this.Steps = [];
-	    this.start = new _nodeEs62["default"]();
-	    this.finish = new _nodeEs62["default"]();
-	};
+				this.canvas = document.getElementById("gameCanvas");
+				this.ctx = this.canvas.getContext("2d");
+
+				this.Steps = [];
+				this.start = new _nodeEs62["default"]();
+				this.finish = new _nodeEs62["default"]();
+			}
+
+			// draw it on the canvas
+
+			_createClass(Route, [{
+				key: "drawAll",
+				value: function drawAll() {
+					for (var i = 0; i < this.Steps.length; i++) {
+						this.draw(this.Steps[i]);
+					}
+				}
+			}, {
+				key: "draw",
+				value: function draw(element) {
+					this.ctx.beginPath();
+					this.ctx.arc(element.posX * 32 + 16, element.posY * 32 + 16, 12, 0, 2 * Math.PI, false);
+					this.ctx.fillStyle = '#e8d361';
+					this.ctx.fill();
+					this.ctx.lineWidth = 2;
+					this.ctx.strokeStyle = '#003300';
+					this.ctx.stroke();
+				}
+			}]);
+
+			return Route;
+		})();
 
 	exports["default"] = Route;
 	module.exports = exports["default"];
@@ -681,6 +740,8 @@
 	    _createClass(Pathfinding, [{
 	        key: "findPath",
 	        value: function findPath(unit) {
+				var _this = this;
+
 	            /**
 	             * The open list (Nodes yet to check),
 	             * this list is always sorted according to the
@@ -811,7 +872,12 @@
 	                                            openList = [];
 	                                        }
 	                                        openList.push(tmp);
-	                                        openList.sort(this.nodeScoring.compare);
+										//openList.sort(this.nodeScoring.compare);
+										//openList.sort(function() { this.nodeScoring.compare(); });
+										// TODO: find out why this works and what exactly it does D:
+										openList.sort(function () {
+											_this.nodeScoring.compare();
+										});
 	                                    }
 	                            }
 	                        }
@@ -900,11 +966,11 @@
 	             * where F is the score, G the cost to move from starting point to the given point on the grid
 	             * and H the approximate cost to reach the destination ( f.e. Manhattan distance ):
 	             */
-	            //TODO FIX THIS !!!!!!!!!!!!!!!!!!!!!!
-	            //let score_a = a.cost + Math.abs(this.posFinishX - a.posX) + Math.abs(this.posFinishY - a.posY);
-	            //let score_b = b.cost + Math.abs(this.posFinishX - b.posX) + Math.abs(this.posFinishY - b.posY);
-	            var score_a = a.cost + Math.abs(3 - a.posX) + Math.abs(3 - a.posY);
-	            var score_b = b.cost + Math.abs(3 - b.posX) + Math.abs(3 - b.posY);
+				// TODO FIX THIS !!!!!!!!!!!!!!!!!!!!!!
+				var score_a = a.cost + Math.abs(this.posFinishX - a.posX) + Math.abs(this.posFinishY - a.posY);
+				var score_b = b.cost + Math.abs(this.posFinishX - b.posX) + Math.abs(this.posFinishY - b.posY);
+				//let score_a = a.cost + Math.abs(3 - a.posX) + Math.abs(3 - a.posY);
+				//let score_b = b.cost + Math.abs(3 - b.posX) + Math.abs(3 - b.posY);
 
 	            if (score_a > score_b) {
 	                return 1;

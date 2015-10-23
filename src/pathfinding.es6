@@ -167,7 +167,12 @@ export default class Pathfinding {
                                 openList = [];
                             }
                             openList.push(tmp);
-                            openList.sort(this.nodeScoring.compare);
+                            //openList.sort(this.nodeScoring.compare);
+                            //openList.sort(function() { this.nodeScoring.compare(); });
+                            // TODO: find out why this works and what exactly it does D:
+                            openList.sort(() => {
+                                this.nodeScoring.compare();
+                            });
                         }
 
 

@@ -42,6 +42,7 @@ export default class App {
         this.draw.drawGrid();
         //this.unit.move();
         this.unit.draw();
+        this.unit.route.drawAll();
 
         requestAnimationFrame(() => {
             this.drawingLoop();
