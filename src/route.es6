@@ -5,7 +5,5 @@ export default class Route {
         this.Steps = [];
         this.start = new Node();
         this.finish = new Node();
-        // TODO: do we need routeActive?
-        this.routeActive = false;
     }
 }

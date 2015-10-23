@@ -1,5 +1,6 @@
 import Node from "./node.es6";
 import Route from "./route.es6";
+import NodeScoring from "./nodeScoring.es6";
 
 
 export default class Pathfinding {
@@ -30,6 +31,9 @@ export default class Pathfinding {
          *  obstacle ?:
          */
         this.INDEX_FOR_OBSTACLE = 1;
+
+        // Boot up the nodeScoring
+        this.nodeScoring = new NodeScoring(-1, -1);
     }
 
     findPath(unit) {
@@ -44,6 +48,10 @@ export default class Pathfinding {
          * The closed list (Nodes already checked):
          */
         let closedList = [];
+
+        this.nodeScoring.posFinishX = unit.route.finish.posX;
+        this.nodeScoring.posFinishY = unit.route.finish.posY;
+
         let done = false;
         let cumCostPath = -1;
         let iteCnt = 0;
@@ -70,7 +78,7 @@ export default class Pathfinding {
                     unit.route.Steps.push(tmp.parent);
                     tmp = tmp.parent;
                 }
-                unit.route.Steps.Reverse();
+                unit.route.Steps.reverse();
                 unit.route.routeActive = true;
             }
             /**    If not yet:    */
@@ -142,7 +150,7 @@ export default class Pathfinding {
                             }
 
                         }
-                        /**    tmp is neither on the openList nor on the closedList
+                        /** tmp is neither on the openList nor on the closedList
                          *  so we gotta add it to the open list:
                          */
                         else {
@@ -158,7 +166,7 @@ export default class Pathfinding {
                                 openList = [];
                             }
                             openList.push(tmp);
-                            openList.Sort(nodeComparer);
+                            openList.sort(this.nodeScoring.compare);
                         }
 
 
@@ -171,20 +179,23 @@ export default class Pathfinding {
                 }
                 closedList.push(curNode);
                 /**    REMOVE curNode FROM THE openList:    */
-                openList.Remove(curNode);
-
+                //openList.Remove(curNode); THERE IS NO REMOVE IN JS
+                let index = array.indexOf(curNode);
+                if (index > -1) {
+                    array.splice(index, 1);
+                }
 
                 /** PATH SCORING: */
 
                 /**
-                 F = G + H,
-
-                 where F is the score, G the cost to move from starting point to the given point on the grid
-                 and H the approximate cost to reach the destination ( f.e. Manhattan distance )
+                 * F = G + H,
+                 *
+                 * where F is the score, G the cost to move from starting point to the given point on the grid
+                 * and H the approximate cost to reach the destination ( f.e. Manhattan distance )
                  */
 
 
-                /**    if openList is empty, there are no open nodes left, even though destination is not reached yet:    */
+                /** if openList is empty, there are no open nodes left, even though destination is not reached yet:    */
                 if (openList.length == 0) {
                     unit.route.Steps = null;
                     unit.route.finish = null;
@@ -194,7 +205,6 @@ export default class Pathfinding {
                 else {
                     curNode = openList[0];
                 }
-
                 iteCnt++;
             }
         }

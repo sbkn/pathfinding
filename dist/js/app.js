@@ -455,8 +455,6 @@
 			this.Steps = [];
 			this.start = new _nodeEs62["default"]();
 			this.finish = new _nodeEs62["default"]();
-			// TODO: do we need routeActive?
-			this.routeActive = false;
 		};
 
 		exports["default"] = Route;
@@ -727,6 +725,10 @@
 
 		var _routeEs62 = _interopRequireDefault(_routeEs6);
 
+		var _nodeScoringEs6 = __webpack_require__(9);
+
+		var _nodeScoringEs62 = _interopRequireDefault(_nodeScoringEs6);
+
 		var Pathfinding = (function () {
 			/**
 			 * This is the Astar algorithm
@@ -758,6 +760,9 @@
 				 *  obstacle ?:
 				 */
 				this.INDEX_FOR_OBSTACLE = 1;
+
+				// Boot up the nodeScoring
+				this.nodeScoring = new _nodeScoringEs62["default"](-1, -1);
 			}
 
 			_createClass(Pathfinding, [{
@@ -774,6 +779,10 @@
 					 * The closed list (Nodes already checked):
 					 */
 					var closedList = [];
+
+					this.nodeScoring.posFinishX = unit.route.finish.posX;
+					this.nodeScoring.posFinishY = unit.route.finish.posY;
+
 					var done = false;
 					var cumCostPath = -1;
 					var iteCnt = 0;
@@ -801,7 +810,7 @@
 								unit.route.Steps.push(tmp.parent);
 								tmp = tmp.parent;
 							}
-							unit.route.Steps.Reverse();
+							unit.route.Steps.reverse();
 							unit.route.routeActive = true;
 						}
 						/**    If not yet:    */
@@ -873,7 +882,7 @@
 											}
 										}
 									}
-									/**    tmp is neither on the openList nor on the closedList
+									/** tmp is neither on the openList nor on the closedList
 									 *  so we gotta add it to the open list:
 									 */
 									else {
@@ -888,7 +897,7 @@
 											openList = [];
 										}
 										openList.push(tmp);
-										openList.Sort(nodeComparer);
+										openList.sort(this.nodeScoring.compare);
 									}
 								}
 							}
@@ -899,17 +908,22 @@
 							}
 							closedList.push(curNode);
 							/**    REMOVE curNode FROM THE openList:    */
-							openList.Remove(curNode);
+							//openList.Remove(curNode); THERE IS NO REMOVE IN JS
+							var index = array.indexOf(curNode);
+							if (index > -1) {
+								array.splice(index, 1);
+							}
 
 							/** PATH SCORING: */
 
 							/**
-							 F = G + H,
-							 where F is the score, G the cost to move from starting point to the given point on the grid
-							 and H the approximate cost to reach the destination ( f.e. Manhattan distance )
+							 * F = G + H,
+							 *
+							 * where F is the score, G the cost to move from starting point to the given point on the grid
+							 * and H the approximate cost to reach the destination ( f.e. Manhattan distance )
 							 */
 
-							/**    if openList is empty, there are no open nodes left, even though destination is not reached yet:    */
+							/** if openList is empty, there are no open nodes left, even though destination is not reached yet:    */
 							if (openList.length == 0) {
 								unit.route.Steps = null;
 								unit.route.finish = null;
@@ -918,7 +932,6 @@
 							} else {
 								curNode = openList[0];
 							}
-
 							iteCnt++;
 						}
 					}
@@ -929,6 +942,86 @@
 		})();
 
 		exports["default"] = Pathfinding;
+		module.exports = exports["default"];
+
+		/***/
+	},
+	/* 9 */
+	/***/ function (module, exports) {
+
+		"use strict";
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = (function () {
+			function defineProperties(target, props) {
+				for (var i = 0; i < props.length; i++) {
+					var descriptor = props[i];
+					descriptor.enumerable = descriptor.enumerable || false;
+					descriptor.configurable = true;
+					if ("value" in descriptor) descriptor.writable = true;
+					Object.defineProperty(target, descriptor.key, descriptor);
+				}
+			}
+
+			return function (Constructor, protoProps, staticProps) {
+				if (protoProps) defineProperties(Constructor.prototype, protoProps);
+				if (staticProps) defineProperties(Constructor, staticProps);
+				return Constructor;
+			};
+		})();
+
+		function _classCallCheck(instance, Constructor) {
+			if (!(instance instanceof Constructor)) {
+				throw new TypeError("Cannot call a class as a function");
+			}
+		}
+
+		var NodeScoring = (function () {
+			function NodeScoring(pos_finish_x, pos_finish_y) {
+				_classCallCheck(this, NodeScoring);
+
+				this.posFinishX = pos_finish_x;
+				this.posFinishY = pos_finish_y;
+			}
+
+			/**
+			 * THIS COMPARES NODES,
+			 * THE LOWER THE SCORE, THE BETTER.
+			 * THUS:
+			 * a_score <= b_score  ----> 1,
+			 * a_score > b_score  ----> -1
+			 */
+
+			_createClass(NodeScoring, [{
+				key: "compare",
+				value: function compare(a, b) {
+					if (a == null || b == null) {
+						return 1;
+					}
+					/**
+					 F = G + H,
+					 where F is the score, G the cost to move from starting point to the given point on the grid
+					 and H the approximate cost to reach the destination ( f.e. Manhattan distance ):
+					 */
+					var score_a = a.cost + Math.abs(this.posFinishX - a.posX) + Math.abs(this.posFinishY - a.posY);
+					var score_b = b.cost + Math.abs(this.posFinishX - b.posX) + Math.abs(this.posFinishY - b.posY);
+					console.log(a.posFinishX + " : " + a.posFinishY);
+					console.log(score_a + " : " + score_b);
+					if (score_a > score_b) {
+						return 1;
+					} else {
+						return -1;
+					}
+				}
+			}]);
+
+			return NodeScoring;
+		})();
+
+		exports["default"] = NodeScoring;
 	module.exports = exports["default"];
 
 /***/ }

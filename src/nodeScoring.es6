@@ -21,8 +21,8 @@ export default class NodeScoring {
          where F is the score, G the cost to move from starting point to the given point on the grid
          and H the approximate cost to reach the destination ( f.e. Manhattan distance ):
          */
-        let score_a = a.cost + Math.abs(this.posFinishX - a.posFinishX) + Math.abs(this.posFinishY - a.posFinishY);
-        let score_b = b.cost + Math.abs(this.posFinishX - b.posFinishX) + Math.abs(this.posFinishY - b.posFinishY);
+        let score_a = a.cost + Math.abs(this.posFinishX - a.posX) + Math.abs(this.posFinishY - a.posY);
+        let score_b = b.cost + Math.abs(this.posFinishX - b.posX) + Math.abs(this.posFinishY - b.posY);
 
         if (score_a > score_b) {
             return 1;
