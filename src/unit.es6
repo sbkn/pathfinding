@@ -24,10 +24,12 @@ export default class Unit {
         this.destX = this.canvas.width / 32 - this.x;
         this.destY = this.canvas.height / 32 - this.y;
 
-        // Give it a route (dummy)
+        // Give it a dummy route
         this.route = new Route();
         this.route.start.posX = this.x;
         this.route.start.posY = this.y;
+        this.route.finish.posX = this.destX;
+        this.route.finish.posY = this.destY;
     }
 
     // draw it on the canvas

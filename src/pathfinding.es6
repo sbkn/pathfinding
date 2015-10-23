@@ -9,7 +9,7 @@ export default class Pathfinding {
      * @param unit
      */
     constructor(map, unit) {
-        this.matrix = map;
+        this.map = map;
         this.unit = unit;
 
         /**    NO_DIAG_MOV OVERRIDES HALF_DIAG_MOV !!    */
@@ -59,72 +59,74 @@ export default class Pathfinding {
          *    MAIN LOOP:
          */
         while (!done) {
-            /*	If we've reached the destination:	*/
+            /**    If we've reached the destination:    */
             if (curNode.equals(unit.route.finish)) {
                 done = true;
                 cumCostPath = curNode.cost;
 
-                route.Steps.Add(curNode);
+                unit.route.Steps.push(curNode);
                 tmp = curNode;
                 while (tmp.parent != null) {
-                    route.Steps.Add(tmp.parent);
+                    unit.route.Steps.push(tmp.parent);
                     tmp = tmp.parent;
                 }
-                route.Steps.Reverse();
-                route.routeActive = true;
+                unit.route.Steps.Reverse();
+                unit.route.routeActive = true;
             }
-            /*	If not yet:	*/
+            /**    If not yet:    */
             else {
-                /*	EXPAND THE CURRENT NODE:	*/
+                /**    EXPAND THE CURRENT NODE:    */
                 for (i = -1; i < 2; i++) {
                     for (j = -1; j < 2; j++) {
-                        /*	Current node is already expanded:	*/
+                        /**    Current node is already expanded:    */
                         if (i == 0 && j == 0) {
                             continue;
                         }
-                        /*	If we're out of bounds:	*/
-                        if (curNode.posX + i < 0 || curNode.posX + i >= gamemap.width || curNode.posY + j < 0 || curNode.posY + j >= gamemap.height) {
+                        /**    If we're out of bounds:    */
+                        if (curNode.posX + i < 0 || curNode.posX + i >= this.map.width || curNode.posY + j < 0 || curNode.posY + j >= this.map.height) {
                             continue;
                         }
-                        /*	If it's an obstacle:	*/
+                        /**    If it's an obstacle:    */
                         if (this.map.getTileType(curNode.posY + j, curNode.posX + i) == this.INDEX_FOR_OBSTACLE) {
                             continue;
                         }
-                        /*	Is this neighbor already done with ?:	*/
+                        /**    Is this neighbor already done with ?:    */
                         if (closedList != null) {
-                            tmp = closedList.Find(a => (a.posX == curNode.posX + i && a.posY == curNode.posY + j));
+                            tmp = closedList.find(a => (a.posX == curNode.posX + i && a.posY == curNode.posY + j));
                             if (tmp != null) {
                                 tmp = null;
                                 continue;
                             }
                         }
 
-                        /*	Skip diagonally adjacent nodes IF NO_DIAG_MOV == true:	*/
+                        /**    Skip diagonally adjacent nodes IF NO_DIAG_MOV == true:    */
                         if (i != 0 && j != 0 && this.NO_DIAG_MOV) {
                             continue;
                         }
-                        /*	THIS IS FOR PSEUDO-NO_DIAG_MOV
+                        /**    THIS IS FOR PSEUDO-NO_DIAG_MOV
                          YOU SHALL NOT MOVE DIAGONALLY IF
                          AN OBSTACLE IS ADJACENT TO current_node
                          AND THIS NODE:
                          */
                         if (i != 0 && j != 0 && this.HALF_DIAG_MOV) {
-                            if (this.map.getTileType(curNode.posY, curNode.posX + i) == this.INDEX_FOR_OBSTACLE)
+                            //if (this.map.getTileType(curNode.posY, curNode.posX + i) == this.INDEX_FOR_OBSTACLE)
+                            if (this.map.getTileType(curNode.posX + i, curNode.posY) == this.INDEX_FOR_OBSTACLE)
                                 continue;
-                            if (this.map.getTileType(curNode.posY + j, curNode.posX) == this.INDEX_FOR_OBSTACLE)
+                            //if (this.map.getTileType(curNode.posY + j,curNode.posX ) == this.INDEX_FOR_OBSTACLE)
+                            if (this.map.getTileType(curNode.posX, curNode.posY + j) == this.INDEX_FOR_OBSTACLE)
                                 continue;
                         }
-                        /*	Check whether this neighbor is already on the open list,
+                        /** Check whether this neighbor is already on the open list,
                          *  if yes - update its costs accordingly:
                          */
                         if (openList != null) {
-                            tmp = openList.Find(a => (a.posX == curNode.posX + i && a.posY == curNode.posY + j));
+                            tmp = openList.find(a => (a.posX == curNode.posX + i && a.posY == curNode.posY + j));
                         }
 
                         if (openList != null && tmp != null) {
-                            /* checking for diagonal vs (horizontal / vertical step): */
+                            /** checking for diagonal vs (horizontal / vertical step): */
                             if (i != 0 && j != 0) {
-                                /*	Is curNode the better predecessor
+                                /**    Is curNode the better predecessor
                                  *  than what we have atm ?:
                                  */
                                 if (tmp.cost > curNode.cost + 14) {
@@ -140,22 +142,22 @@ export default class Pathfinding {
                             }
 
                         }
-                        /*	tmp is neither on the openList nor on the closedList
+                        /**    tmp is neither on the openList nor on the closedList
                          *  so we gotta add it to the open list:
                          */
                         else {
                             if (i != 0 && j != 0) {
-                                tmp_cost = curNode.cost + 14;
+                                tmpCost = curNode.cost + 14;
                             }
                             else {
-                                tmp_cost = curNode.cost + 10;
+                                tmpCost = curNode.cost + 10;
                             }
                             tmp = new Node(curNode.posX + i, curNode.posY + j, tmpCost);
                             tmp.parent = curNode;
                             if (openList == null) {
                                 openList = [];
                             }
-                            openList.Add(tmp);
+                            openList.push(tmp);
                             openList.Sort(nodeComparer);
                         }
 
@@ -163,12 +165,12 @@ export default class Pathfinding {
                     }
                 }
 
-                /*	ADD curNode TO THE closedList:	*/
+                /**    ADD curNode TO THE closedList:    */
                 if (closedList == null) {
                     closedList = [];
                 }
-                closedList.Add(curNode);
-                /*	REMOVE curNode FROM THE openList:	*/
+                closedList.push(curNode);
+                /**    REMOVE curNode FROM THE openList:    */
                 openList.Remove(curNode);
 
 
@@ -184,9 +186,9 @@ export default class Pathfinding {
 
                 /**    if openList is empty, there are no open nodes left, even though destination is not reached yet:    */
                 if (openList.length == 0) {
-                    route.Steps = null;
-                    route.finish = null;
-                    route.routeActive = false;
+                    unit.route.Steps = null;
+                    unit.route.finish = null;
+                    unit.route.routeActive = false;
                     done = true;
                 }
                 else {

@@ -3,6 +3,7 @@ import Draw from "./draw.es6";
 import Unit from "./unit.es6";
 import Map from "./map.es6";
 import Input from "./input.es6";
+import Route from "./route.es6";
 import Pathfinding from "./pathfinding.es6";
 
 
@@ -38,6 +39,7 @@ export default class App {
         this.draw.drawGrid();
         //this.unit.move();
         this.unit.draw();
+        this.pathfinder.findPath(this.unit);
 
         requestAnimationFrame(() => {
             this.drawingLoop();
