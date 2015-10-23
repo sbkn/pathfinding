@@ -62,6 +62,7 @@ export default class Unit {
     }
 
     // move it along its path
+    // TODO: implement actually useful movement, as in walking along the route
     move() {
         let dirX = 0;
         let dirY = 0;

@@ -33,7 +33,8 @@ export default class Pathfinding {
         this.INDEX_FOR_OBSTACLE = 1;
 
         // Boot up the nodeScoring
-        this.nodeScoring = new NodeScoring(-1, -1);
+        // TODO this seems very not elegant
+        this.nodeScoring = new NodeScoring(0, 0);
     }
 
     findPath(unit) {

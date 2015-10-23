@@ -126,8 +126,8 @@
 	            this.draw.drawObstacles(this.map.matrix);
 	            this.draw.drawGrid();
 	            //this.unit.move();
-	            this.unit.draw();
 				this.unit.route.drawAll();
+	            this.unit.draw();
 
 	            requestAnimationFrame(function () {
 	                _this.drawingLoop();
@@ -340,6 +340,7 @@
 	        }
 
 	        // move it along its path
+			// TODO: implement actually useful movement, as in walking along the route
 	    }, {
 	        key: "move",
 	        value: function move() {
@@ -734,7 +735,8 @@
 	        this.INDEX_FOR_OBSTACLE = 1;
 
 	        // Boot up the nodeScoring
-	        this.nodeScoring = new _nodeScoringEs62["default"](-1, -1);
+			// TODO this seems very not elegant
+			this.nodeScoring = new _nodeScoringEs62["default"](0, 0);
 	    }
 
 	    _createClass(Pathfinding, [{
@@ -966,11 +968,8 @@
 	             * where F is the score, G the cost to move from starting point to the given point on the grid
 	             * and H the approximate cost to reach the destination ( f.e. Manhattan distance ):
 	             */
-				// TODO FIX THIS !!!!!!!!!!!!!!!!!!!!!!
 				var score_a = a.cost + Math.abs(this.posFinishX - a.posX) + Math.abs(this.posFinishY - a.posY);
 				var score_b = b.cost + Math.abs(this.posFinishX - b.posX) + Math.abs(this.posFinishY - b.posY);
-				//let score_a = a.cost + Math.abs(3 - a.posX) + Math.abs(3 - a.posY);
-				//let score_b = b.cost + Math.abs(3 - b.posX) + Math.abs(3 - b.posY);
 
 	            if (score_a > score_b) {
 	                return 1;
