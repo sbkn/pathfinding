@@ -265,9 +265,16 @@
 	        this.ctx = this.canvas.getContext("2d");
 
 			// place the unit at the right position
-			var spawnLocation = map.findFreeNode();
-			this.x = spawnLocation[0];
-			this.y = spawnLocation[1];
+
+			try {
+				var spawnLocation = map.findFreeNode();
+				this.x = spawnLocation[0];
+				this.y = spawnLocation[1];
+			} catch (e) {
+				console.log("NO SPAWN POSITION FOUND FOR UNIT!");
+				this.x = -1;
+				this.y = -1;
+			}
 
 			this.ms = 1;
 
@@ -430,15 +437,15 @@
 				key: "findFreeNode",
 				value: function findFreeNode() {
 					var i, x, y;
-					//TODO: TOP LEL
-					for (i = 0; i < 100; i++) {
+					for (i = 0; i < this.width * this.height; i++) {
 						x = this.getRandomInt(0, this.width - 1);
 						y = this.getRandomInt(0, this.height - 1);
 						if (this.matrix[x][y] == 0) {
 							return [x, y];
 						}
 					}
-					return [0, 0];
+					//throw "noFreeNodeFound";
+					throw new Error("noFreeNodeFound");
 				}
 			}, {
 				key: "getRandomInt",
