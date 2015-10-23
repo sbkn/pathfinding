@@ -16,10 +16,10 @@ export default class NodeScoring {
             return 1;
         }
         /**
-         F = G + H,
-
-         where F is the score, G the cost to move from starting point to the given point on the grid
-         and H the approximate cost to reach the destination ( f.e. Manhattan distance ):
+         * F = G + H,
+         *
+         * where F is the score, G the cost to move from starting point to the given point on the grid
+         * and H the approximate cost to reach the destination ( f.e. Manhattan distance ):
          */
         let score_a = a.cost + Math.abs(this.posFinishX - a.posX) + Math.abs(this.posFinishY - a.posY);
         let score_b = b.cost + Math.abs(this.posFinishX - b.posX) + Math.abs(this.posFinishY - b.posY);
