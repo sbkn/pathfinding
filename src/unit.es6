@@ -20,9 +20,16 @@ export default class Unit {
         // movement speed
         this.ms = 1;
 
-        // destination
-        this.destX = this.canvas.width / 32 - this.x;
-        this.destY = this.canvas.height / 32 - this.y;
+        // random destination
+        try {
+            let destLocation = map.findFreeNode();
+            this.destX = destLocation[0];
+            this.destY = destLocation[1];
+        } catch (e) {
+            console.log("NO DEST POSITION FOUND FOR UNIT!");
+            this.destX = -1;
+            this.destY = -1;
+        }
 
         // Give it a dummy route
         this.route = new Route();

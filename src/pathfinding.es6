@@ -95,7 +95,8 @@ export default class Pathfinding {
                             continue;
                         }
                         /**    If it's an obstacle:    */
-                        if (this.map.getTileType(curNode.posY + j, curNode.posX + i) == this.INDEX_FOR_OBSTACLE) {
+                        //if (this.map.getTileType(curNode.posY + j, curNode.posX + i) == this.INDEX_FOR_OBSTACLE) {
+                        if (this.map.getTileType(curNode.posX + i, curNode.posY + j) == this.INDEX_FOR_OBSTACLE) {
                             continue;
                         }
                         /**    Is this neighbor already done with ?:    */
@@ -180,9 +181,9 @@ export default class Pathfinding {
                 closedList.push(curNode);
                 /**    REMOVE curNode FROM THE openList:    */
                 //openList.Remove(curNode); THERE IS NO REMOVE IN JS
-                let index = array.indexOf(curNode);
+                let index = openList.indexOf(curNode);
                 if (index > -1) {
-                    array.splice(index, 1);
+                    openList.splice(index, 1);
                 }
 
                 /** PATH SCORING: */
@@ -193,7 +194,6 @@ export default class Pathfinding {
                  * where F is the score, G the cost to move from starting point to the given point on the grid
                  * and H the approximate cost to reach the destination ( f.e. Manhattan distance )
                  */
-
 
                 /** if openList is empty, there are no open nodes left, even though destination is not reached yet:    */
                 if (openList.length == 0) {

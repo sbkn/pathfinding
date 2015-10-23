@@ -23,6 +23,9 @@ export default class App {
         this.draw = new Draw();
         this.unit = new Unit(this.map);
         this.pathfinder = new Pathfinding(this.map, this.unit);
+
+        this.pathfinder.findPath(this.unit);
+
     }
 
     /**
@@ -39,7 +42,6 @@ export default class App {
         this.draw.drawGrid();
         //this.unit.move();
         this.unit.draw();
-        this.pathfinder.findPath(this.unit);
 
         requestAnimationFrame(() => {
             this.drawingLoop();
