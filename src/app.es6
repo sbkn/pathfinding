@@ -36,7 +36,7 @@ export default class App {
 
         this.draw.drawObstacles(this.map.matrix);
         this.draw.drawGrid();
-        this.unit.move();
+        //this.unit.move();
         this.unit.draw();
 
         requestAnimationFrame(() => {

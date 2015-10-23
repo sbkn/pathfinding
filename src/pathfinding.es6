@@ -1,5 +1,201 @@
+import Node from "./node.es6";
+import Route from "./route.es6";
+
+
 export default class Pathfinding {
+    /**
+     * This is the Astar algorithm
+     * @param map
+     * @param unit
+     */
     constructor(map, unit) {
+        this.matrix = map;
+        this.unit = unit;
+
+        /**    NO_DIAG_MOV OVERRIDES HALF_DIAG_MOV !!    */
+
+        /**
+         BY TURNING THIS ON (=TRUE) YOU TELL ASTAR
+         TO SKIP DIAGONALLY ADJACENT NODES WHEN EXPANDING:
+         */
+        this.NO_DIAG_MOV = false;
+        /**
+         *    Is half-diagonal movement valid ?
+         *    (This means you can move diagonally,
+         *    but only if there is no obstacle at
+         *    the adjacent tiles):
+         */
+        this.HALF_DIAG_MOV = true;
+        /**    What is the index in map[][] for
+         *  obstacle ?:
+         */
+        this.INDEX_FOR_OBSTACLE = 1;
+    }
+
+    findPath(unit) {
+        /**
+         * The open list (Nodes yet to check),
+         * this list is always sorted according to the
+         * score of its nodes:
+         */
+        let openList = [];
+
+        /**
+         * The closed list (Nodes already checked):
+         */
+        let closedList = [];
+        let done = false;
+        let cumCostPath = -1;
+        let iteCnt = 0;
+        let tmpCost = 0;
+        let tmp = null;
+
+        //	The node which is currently being processed:
+        let curNode = unit.route.start;
+
+        let i, j;
+
+        /**
+         *    MAIN LOOP:
+         */
+        while (!done) {
+            /*	If we've reached the destination:	*/
+            if (curNode.equals(unit.route.finish)) {
+                done = true;
+                cumCostPath = curNode.cost;
+
+                route.Steps.Add(curNode);
+                tmp = curNode;
+                while (tmp.parent != null) {
+                    route.Steps.Add(tmp.parent);
+                    tmp = tmp.parent;
+                }
+                route.Steps.Reverse();
+                route.routeActive = true;
+            }
+            /*	If not yet:	*/
+            else {
+                /*	EXPAND THE CURRENT NODE:	*/
+                for (i = -1; i < 2; i++) {
+                    for (j = -1; j < 2; j++) {
+                        /*	Current node is already expanded:	*/
+                        if (i == 0 && j == 0) {
+                            continue;
+                        }
+                        /*	If we're out of bounds:	*/
+                        if (curNode.posX + i < 0 || curNode.posX + i >= gamemap.width || curNode.posY + j < 0 || curNode.posY + j >= gamemap.height) {
+                            continue;
+                        }
+                        /*	If it's an obstacle:	*/
+                        if (this.map.getTileType(curNode.posY + j, curNode.posX + i) == this.INDEX_FOR_OBSTACLE) {
+                            continue;
+                        }
+                        /*	Is this neighbor already done with ?:	*/
+                        if (closedList != null) {
+                            tmp = closedList.Find(a => (a.posX == curNode.posX + i && a.posY == curNode.posY + j));
+                            if (tmp != null) {
+                                tmp = null;
+                                continue;
+                            }
+                        }
+
+                        /*	Skip diagonally adjacent nodes IF NO_DIAG_MOV == true:	*/
+                        if (i != 0 && j != 0 && this.NO_DIAG_MOV) {
+                            continue;
+                        }
+                        /*	THIS IS FOR PSEUDO-NO_DIAG_MOV
+                         YOU SHALL NOT MOVE DIAGONALLY IF
+                         AN OBSTACLE IS ADJACENT TO current_node
+                         AND THIS NODE:
+                         */
+                        if (i != 0 && j != 0 && this.HALF_DIAG_MOV) {
+                            if (this.map.getTileType(curNode.posY, curNode.posX + i) == this.INDEX_FOR_OBSTACLE)
+                                continue;
+                            if (this.map.getTileType(curNode.posY + j, curNode.posX) == this.INDEX_FOR_OBSTACLE)
+                                continue;
+                        }
+                        /*	Check whether this neighbor is already on the open list,
+                         *  if yes - update its costs accordingly:
+                         */
+                        if (openList != null) {
+                            tmp = openList.Find(a => (a.posX == curNode.posX + i && a.posY == curNode.posY + j));
+                        }
+
+                        if (openList != null && tmp != null) {
+                            /* checking for diagonal vs (horizontal / vertical step): */
+                            if (i != 0 && j != 0) {
+                                /*	Is curNode the better predecessor
+                                 *  than what we have atm ?:
+                                 */
+                                if (tmp.cost > curNode.cost + 14) {
+                                    tmp.cost = curNode.cost + 14;
+                                    tmp.parent = curNode;
+                                }
+                            }
+                            else {
+                                if (tmp.cost > curNode.cost + 10) {
+                                    tmp.cost = curNode.cost + 10;
+                                    tmp.parent = curNode;
+                                }
+                            }
+
+                        }
+                        /*	tmp is neither on the openList nor on the closedList
+                         *  so we gotta add it to the open list:
+                         */
+                        else {
+                            if (i != 0 && j != 0) {
+                                tmp_cost = curNode.cost + 14;
+                            }
+                            else {
+                                tmp_cost = curNode.cost + 10;
+                            }
+                            tmp = new Node(curNode.posX + i, curNode.posY + j, tmpCost);
+                            tmp.parent = curNode;
+                            if (openList == null) {
+                                openList = [];
+                            }
+                            openList.Add(tmp);
+                            openList.Sort(nodeComparer);
+                        }
+
+
+                    }
+                }
+
+                /*	ADD curNode TO THE closedList:	*/
+                if (closedList == null) {
+                    closedList = [];
+                }
+                closedList.Add(curNode);
+                /*	REMOVE curNode FROM THE openList:	*/
+                openList.Remove(curNode);
+
+
+                /** PATH SCORING: */
+
+                /**
+                 F = G + H,
+
+                 where F is the score, G the cost to move from starting point to the given point on the grid
+                 and H the approximate cost to reach the destination ( f.e. Manhattan distance )
+                 */
+
+
+                /**    if openList is empty, there are no open nodes left, even though destination is not reached yet:    */
+                if (openList.length == 0) {
+                    route.Steps = null;
+                    route.finish = null;
+                    route.routeActive = false;
+                    done = true;
+                }
+                else {
+                    curNode = openList[0];
+                }
+
+                iteCnt++;
+            }
+        }
 
     }
 }
