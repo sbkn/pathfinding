@@ -24,6 +24,7 @@ export default class Map {
         for (i = 0; i < 5; i++) {
             this.cellularAutomata(this.matrix);
         }
+        console.log("Map init done.");
     }
 
     // do the game of life !

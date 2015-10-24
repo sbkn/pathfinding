@@ -37,6 +37,8 @@ export default class Unit {
         this.route.start.posY = this.y;
         this.route.finish.posX = this.destX;
         this.route.finish.posY = this.destY;
+
+        console.log("Unit init done.");
     }
 
     // drawStep it on the canvas

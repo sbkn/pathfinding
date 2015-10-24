@@ -105,6 +105,8 @@
 	        this.pathfinder = new _pathfindingEs62["default"](this.map, this.unit);
 
 	        this.pathfinder.findPath(this.unit);
+
+			console.log("App init done.");
 	    }
 
 	    /**
@@ -312,6 +314,8 @@
 	        this.route.start.posY = this.y;
 	        this.route.finish.posX = this.destX;
 	        this.route.finish.posY = this.destY;
+
+			console.log("Unit init done.");
 	    }
 
 		// drawStep it on the canvas
@@ -401,6 +405,8 @@
 	        this.cost = 0;
 	        // TODO: find out how to init values like this one, mb undefined?
 	        this.parent = null;
+
+			console.log("Node init done.");
 	    }
 
 	    /**
@@ -468,6 +474,8 @@
 				this.Steps = [];
 				this.start = new _nodeEs62["default"]();
 				this.finish = new _nodeEs62["default"]();
+
+				console.log("Route init done.");
 			}
 
 			// drawStep it on the canvas
@@ -542,6 +550,7 @@
 	        for (i = 0; i < 5; i++) {
 	            this.cellularAutomata(this.matrix);
 	        }
+			console.log("Map init done.");
 	    }
 
 	    // do the game of life !
@@ -940,6 +949,8 @@
 
 	        this.posFinishX = pos_finish_x;
 	        this.posFinishY = pos_finish_y;
+
+			console.log("NodeScoring init done.");
 	    }
 
 	    /**

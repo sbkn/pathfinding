@@ -2,6 +2,8 @@ export default class NodeScoring {
     constructor(pos_finish_x, pos_finish_y) {
         this.posFinishX = pos_finish_x;
         this.posFinishY = pos_finish_y;
+
+        console.log("NodeScoring init done.");
     }
 
     /**

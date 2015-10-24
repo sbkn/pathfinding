@@ -8,6 +8,8 @@ export default class Route {
         this.Steps = [];
         this.start = new Node();
         this.finish = new Node();
+
+        console.log("Route init done.");
     }
 
     // drawStep it on the canvas

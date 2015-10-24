@@ -26,6 +26,7 @@ export default class App {
 
         this.pathfinder.findPath(this.unit);
 
+        console.log("App init done.");
     }
 
     /**
