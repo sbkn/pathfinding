@@ -7,13 +7,13 @@ export default class Draw {
 
     drawGrid() {
         let x;
-        // draw vertical lines:
+        // drawStep vertical lines:
         for (x = 0; x <= this.canvas.width; x += 32) {
             this.ctx.moveTo(x, 0);
             this.ctx.lineTo(x, this.canvas.height);
         }
 
-        // draw horizontal lines:
+        // drawStep horizontal lines:
         for (x = 0; x <= this.canvas.height; x += 32) {
             this.ctx.moveTo(0, x);
             this.ctx.lineTo(this.canvas.width, x);

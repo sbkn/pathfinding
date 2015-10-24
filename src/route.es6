@@ -10,16 +10,18 @@ export default class Route {
         this.finish = new Node();
     }
 
-    // draw it on the canvas
-    drawAll() {
-        for (var i = 0; i < this.Steps.length; i++) {
-            this.draw(this.Steps[i]);
+    // drawStep it on the canvas
+    draw() {
+        if (this.Steps != null) {
+            for (var i = 0; i < this.Steps.length; i++) {
+                this.drawStep(this.Steps[i]);
+            }
         }
     }
 
-    draw(element) {
+    drawStep(element) {
         this.ctx.beginPath();
-        this.ctx.arc(element.posX * 32 + 16, element.posY * 32 + 16, 12, 0, 2 * Math.PI, false);
+        this.ctx.arc(element.posX * 32 + 16, element.posY * 32 + 16, 8, 0, 2 * Math.PI, false);
         this.ctx.fillStyle = '#e8d361';
         this.ctx.fill();
         this.ctx.lineWidth = 2;

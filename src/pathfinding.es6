@@ -4,11 +4,6 @@ import NodeScoring from "./nodeScoring.es6";
 
 
 export default class Pathfinding {
-    /**
-     * This is the Astar algorithm
-     * @param map
-     * @param unit
-     */
     constructor(map, unit) {
         this.map = map;
         this.unit = unit;
@@ -35,8 +30,14 @@ export default class Pathfinding {
         // Boot up the nodeScoring
         // TODO this seems very not elegant
         this.nodeScoring = new NodeScoring(0, 0);
+
+        console.log("Pathfinding init done.");
     }
 
+    /**
+     * This is the Astar algorithm
+     * @param unit
+     */
     findPath(unit) {
         /**
          * The open list (Nodes yet to check),
@@ -119,10 +120,8 @@ export default class Pathfinding {
                          AND THIS NODE:
                          */
                         if (i != 0 && j != 0 && this.HALF_DIAG_MOV) {
-                            //if (this.map.getTileType(curNode.posY, curNode.posX + i) == this.INDEX_FOR_OBSTACLE)
                             if (this.map.getTileType(curNode.posX + i, curNode.posY) == this.INDEX_FOR_OBSTACLE)
                                 continue;
-                            //if (this.map.getTileType(curNode.posY + j,curNode.posX ) == this.INDEX_FOR_OBSTACLE)
                             if (this.map.getTileType(curNode.posX, curNode.posY + j) == this.INDEX_FOR_OBSTACLE)
                                 continue;
                         }
@@ -162,7 +161,8 @@ export default class Pathfinding {
                             else {
                                 tmpCost = curNode.cost + 10;
                             }
-                            tmp = new Node(curNode.posX + i, curNode.posY + j, tmpCost);
+                            tmp = new Node(curNode.posX + i, curNode.posY + j);
+                            tmp.cost = tmpCost;
                             tmp.parent = curNode;
                             if (openList == null) {
                                 openList = [];
@@ -171,12 +171,11 @@ export default class Pathfinding {
                             //openList.sort(this.nodeScoring.compare);
                             //openList.sort(function() { this.nodeScoring.compare(); });
                             // TODO: find out why this works and what exactly it does D:
+                            /** PATH SCORING: */
                             openList.sort(() => {
                                 this.nodeScoring.compare();
                             });
                         }
-
-
                     }
                 }
 
@@ -186,20 +185,10 @@ export default class Pathfinding {
                 }
                 closedList.push(curNode);
                 /**    REMOVE curNode FROM THE openList:    */
-                //openList.Remove(curNode); THERE IS NO REMOVE IN JS
                 let index = openList.indexOf(curNode);
                 if (index > -1) {
                     openList.splice(index, 1);
                 }
-
-                /** PATH SCORING: */
-
-                /**
-                 * F = G + H,
-                 *
-                 * where F is the score, G the cost to move from starting point to the given point on the grid
-                 * and H the approximate cost to reach the destination ( f.e. Manhattan distance )
-                 */
 
                 /** if openList is empty, there are no open nodes left, even though destination is not reached yet:    */
                 if (openList.length == 0) {
@@ -207,6 +196,7 @@ export default class Pathfinding {
                     unit.route.finish = null;
                     unit.route.routeActive = false;
                     done = true;
+                    console.log("NO PATH FOUND!");
                 }
                 else {
                     curNode = openList[0];

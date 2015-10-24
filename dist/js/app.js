@@ -126,7 +126,7 @@
 	            this.draw.drawObstacles(this.map.matrix);
 	            this.draw.drawGrid();
 	            //this.unit.move();
-				this.unit.route.drawAll();
+				this.unit.route.draw();
 	            this.unit.draw();
 
 	            requestAnimationFrame(function () {
@@ -215,13 +215,13 @@
 	        key: "drawGrid",
 	        value: function drawGrid() {
 	            var x = undefined;
-	            // draw vertical lines:
+				// drawStep vertical lines:
 	            for (x = 0; x <= this.canvas.width; x += 32) {
 	                this.ctx.moveTo(x, 0);
 	                this.ctx.lineTo(x, this.canvas.height);
 	            }
 
-	            // draw horizontal lines:
+				// drawStep horizontal lines:
 	            for (x = 0; x <= this.canvas.height; x += 32) {
 	                this.ctx.moveTo(0, x);
 	                this.ctx.lineTo(this.canvas.width, x);
@@ -314,13 +314,13 @@
 	        this.route.finish.posY = this.destY;
 	    }
 
-	    // draw it on the canvas
+		// drawStep it on the canvas
 
 	    _createClass(Unit, [{
 	        key: "draw",
 	        value: function draw() {
 	            this.ctx.beginPath();
-	            this.ctx.arc(this.x * 32 + 16, this.y * 32 + 16, 16, 0, 2 * Math.PI, false);
+				this.ctx.arc(this.x * 32 + 16, this.y * 32 + 16, 12, 0, 2 * Math.PI, false);
 				this.ctx.fillStyle = '#14820d';
 	            this.ctx.fill();
 	            this.ctx.lineWidth = 2;
@@ -330,7 +330,7 @@
 				//TODO This is experimental:
 				if (!(this.x == this.destX && this.y == this.destY)) {
 					this.ctx.beginPath();
-					this.ctx.arc(this.destX * 32 + 16, this.destY * 32 + 16, 16, 0, 2 * Math.PI, false);
+					this.ctx.arc(this.destX * 32 + 16, this.destY * 32 + 16, 12, 0, 2 * Math.PI, false);
 					this.ctx.fillStyle = '#ff0000';
 					this.ctx.fill();
 					this.ctx.lineWidth = 2;
@@ -470,20 +470,22 @@
 				this.finish = new _nodeEs62["default"]();
 			}
 
-			// draw it on the canvas
+			// drawStep it on the canvas
 
 			_createClass(Route, [{
-				key: "drawAll",
-				value: function drawAll() {
-					for (var i = 0; i < this.Steps.length; i++) {
-						this.draw(this.Steps[i]);
+				key: "draw",
+				value: function draw() {
+					if (this.Steps != null) {
+						for (var i = 0; i < this.Steps.length; i++) {
+							this.drawStep(this.Steps[i]);
+						}
 					}
 				}
 			}, {
-				key: "draw",
-				value: function draw(element) {
+				key: "drawStep",
+				value: function drawStep(element) {
 					this.ctx.beginPath();
-					this.ctx.arc(element.posX * 32 + 16, element.posY * 32 + 16, 12, 0, 2 * Math.PI, false);
+					this.ctx.arc(element.posX * 32 + 16, element.posY * 32 + 16, 8, 0, 2 * Math.PI, false);
 					this.ctx.fillStyle = '#e8d361';
 					this.ctx.fill();
 					this.ctx.lineWidth = 2;
@@ -703,12 +705,6 @@
 	var _nodeScoringEs62 = _interopRequireDefault(_nodeScoringEs6);
 
 	var Pathfinding = (function () {
-	    /**
-	     * This is the Astar algorithm
-	     * @param map
-	     * @param unit
-	     */
-
 	    function Pathfinding(map, unit) {
 	        _classCallCheck(this, Pathfinding);
 
@@ -737,7 +733,14 @@
 	        // Boot up the nodeScoring
 			// TODO this seems very not elegant
 			this.nodeScoring = new _nodeScoringEs62["default"](0, 0);
+
+			console.log("Pathfinding init done.");
 	    }
+
+		/**
+		 * This is the Astar algorithm
+		 * @param unit
+		 */
 
 	    _createClass(Pathfinding, [{
 	        key: "findPath",
@@ -828,9 +831,7 @@
 	                                 AND THIS NODE:
 	                                 */
 	                                if (i != 0 && j != 0 && this.HALF_DIAG_MOV) {
-	                                    //if (this.map.getTileType(curNode.posY, curNode.posX + i) == this.INDEX_FOR_OBSTACLE)
 	                                    if (this.map.getTileType(curNode.posX + i, curNode.posY) == this.INDEX_FOR_OBSTACLE) continue;
-	                                    //if (this.map.getTileType(curNode.posY + j,curNode.posX ) == this.INDEX_FOR_OBSTACLE)
 	                                    if (this.map.getTileType(curNode.posX, curNode.posY + j) == this.INDEX_FOR_OBSTACLE) continue;
 	                                }
 	                                /** Check whether this neighbor is already on the open list,
@@ -868,7 +869,8 @@
 	                                        } else {
 	                                            tmpCost = curNode.cost + 10;
 	                                        }
-	                                        tmp = new _nodeEs62["default"](curNode.posX + i, curNode.posY + j, tmpCost);
+										tmp = new _nodeEs62["default"](curNode.posX + i, curNode.posY + j);
+										tmp.cost = tmpCost;
 	                                        tmp.parent = curNode;
 	                                        if (openList == null) {
 	                                            openList = [];
@@ -877,6 +879,7 @@
 										//openList.sort(this.nodeScoring.compare);
 										//openList.sort(function() { this.nodeScoring.compare(); });
 										// TODO: find out why this works and what exactly it does D:
+										/** PATH SCORING: */
 										openList.sort(function () {
 											_this.nodeScoring.compare();
 										});
@@ -890,20 +893,10 @@
 	                        }
 	                        closedList.push(curNode);
 	                        /**    REMOVE curNode FROM THE openList:    */
-	                        //openList.Remove(curNode); THERE IS NO REMOVE IN JS
 	                        var index = openList.indexOf(curNode);
 	                        if (index > -1) {
 	                            openList.splice(index, 1);
 	                        }
-
-	                        /** PATH SCORING: */
-
-	                        /**
-	                         * F = G + H,
-	                         *
-	                         * where F is the score, G the cost to move from starting point to the given point on the grid
-	                         * and H the approximate cost to reach the destination ( f.e. Manhattan distance )
-	                         */
 
 	                        /** if openList is empty, there are no open nodes left, even though destination is not reached yet:    */
 	                        if (openList.length == 0) {
@@ -911,6 +904,7 @@
 	                            unit.route.finish = null;
 	                            unit.route.routeActive = false;
 	                            done = true;
+								console.log("NO PATH FOUND!");
 	                        } else {
 	                            curNode = openList[0];
 	                        }
