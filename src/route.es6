@@ -12,7 +12,7 @@ export default class Route {
         console.log("Route init done.");
     }
 
-    // drawStep it on the canvas
+    // draw it on the canvas
     draw() {
         if (this.Steps != null) {
             for (var i = 0; i < this.Steps.length; i++) {

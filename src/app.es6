@@ -14,6 +14,7 @@ export default class App {
      * @constructor App
      */
     constructor() {
+        // TODO: how to handle canvas/ctx reference efficiently?
         this.canvas = document.getElementById("gameCanvas");
         this.ctx = this.canvas.getContext("2d");
 
@@ -38,6 +39,8 @@ export default class App {
 
     drawingLoop() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.pathfinder.drawClosedList();
 
         this.draw.drawObstacles(this.map.matrix);
         this.draw.drawGrid();

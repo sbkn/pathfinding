@@ -8,9 +8,9 @@ var assert = require("assert"),
 describe('NodeScoring', function () {
 
     /**
-     * compare
+     * compareManhattan
      */
-    describe('#compare(a,b)', function () {
+    describe('#compareManhattan(a,b)', function () {
 
         it('compares two nodes and verifies that score a > b', function () {
             var a = new Node(0, 0);
@@ -18,7 +18,7 @@ describe('NodeScoring', function () {
             var nodescoring = new NodeScoring(0, 0);
             a.cost = 2;
             b.cost = 1;
-            var result = nodescoring.compare(a, b);
+            var result = nodescoring.compareManhattan(a, b);
             console.log(result);
             assert.equal(1, result);
         });
@@ -29,7 +29,7 @@ describe('NodeScoring', function () {
             var nodescoring = new NodeScoring(0, 0);
             a.cost = 1;
             b.cost = 2;
-            var result = nodescoring.compare(a, b);
+            var result = nodescoring.compareManhattan(a, b);
             console.log(result);
             assert.equal(-1, result);
         });
@@ -39,7 +39,7 @@ describe('NodeScoring', function () {
             var b = null;
             var nodescoring = new NodeScoring(0, 0);
             a.cost = 1;
-            var result = nodescoring.compare(a, b);
+            var result = nodescoring.compareManhattan(a, b);
             console.log(result);
             assert.equal(1, result);
         });

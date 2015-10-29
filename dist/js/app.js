@@ -94,6 +94,7 @@
 	    function App() {
 	        _classCallCheck(this, App);
 
+			// TODO: how to handle canvas/ctx reference efficiently?
 	        this.canvas = document.getElementById("gameCanvas");
 	        this.ctx = this.canvas.getContext("2d");
 
@@ -124,6 +125,8 @@
 	            var _this = this;
 
 	            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+				this.pathfinder.drawClosedList();
 
 	            this.draw.drawObstacles(this.map.matrix);
 	            this.draw.drawGrid();
@@ -405,8 +408,6 @@
 	        this.cost = 0;
 	        // TODO: find out how to init values like this one, mb undefined?
 	        this.parent = null;
-
-			console.log("Node init done.");
 	    }
 
 	    /**
@@ -478,7 +479,7 @@
 				console.log("Route init done.");
 			}
 
-			// drawStep it on the canvas
+			// draw it on the canvas
 
 			_createClass(Route, [{
 				key: "draw",
@@ -717,6 +718,9 @@
 	    function Pathfinding(map, unit) {
 	        _classCallCheck(this, Pathfinding);
 
+			this.canvas = document.getElementById("gameCanvas");
+			this.ctx = this.canvas.getContext("2d");
+
 	        this.map = map;
 	        this.unit = unit;
 
@@ -743,6 +747,8 @@
 			// TODO this seems very not elegant
 			this.nodeScoring = new _nodeScoringEs62["default"](0, 0);
 
+			this.closedList = [];
+
 			console.log("Pathfinding init done.");
 	    }
 
@@ -766,7 +772,7 @@
 	            /**
 	             * The closed list (Nodes already checked):
 	             */
-	            var closedList = [];
+				this.closedList = [];
 
 	            this.nodeScoring.posFinishX = unit.route.finish.posX;
 	            this.nodeScoring.posFinishY = unit.route.finish.posY;
@@ -820,8 +826,8 @@
 	                                    continue;
 	                                }
 	                                /**    Is this neighbor already done with ?:    */
-	                                if (closedList != null) {
-	                                    tmp = closedList.find(function (a) {
+									if (this.closedList != null) {
+										tmp = this.closedList.find(function (a) {
 	                                        return a.posX == curNode.posX + i && a.posY == curNode.posY + j;
 	                                    });
 	                                    if (tmp != null) {
@@ -885,22 +891,22 @@
 	                                            openList = [];
 	                                        }
 	                                        openList.push(tmp);
-										//openList.sort(this.nodeScoring.compare);
-										//openList.sort(function() { this.nodeScoring.compare(); });
+										//openList.sort(this.nodeScoring.compareManhattan);
+										//openList.sort(function() { this.nodeScoring.compareManhattan(); });
 										// TODO: find out why this works and what exactly it does D:
 										/** PATH SCORING: */
 										openList.sort(function () {
-											_this.nodeScoring.compare();
+											_this.nodeScoring.compareManhattan();
 										});
 	                                    }
 	                            }
 	                        }
 
 	                        /**    ADD curNode TO THE closedList:    */
-	                        if (closedList == null) {
-	                            closedList = [];
+						if (this.closedList == null) {
+							this.closedList = [];
 	                        }
-	                        closedList.push(curNode);
+						this.closedList.push(curNode);
 	                        /**    REMOVE curNode FROM THE openList:    */
 	                        var index = openList.indexOf(curNode);
 	                        if (index > -1) {
@@ -921,6 +927,23 @@
 	                    }
 	            }
 	        }
+
+			// draw the closedList it on the canvas
+		}, {
+			key: "drawClosedList",
+			value: function drawClosedList() {
+				if (this.closedList != null) {
+					for (var i = 0; i < this.closedList.length; i++) {
+						this.drawClosedElement(this.closedList[i]);
+					}
+				}
+			}
+		}, {
+			key: "drawClosedElement",
+			value: function drawClosedElement(element) {
+				this.ctx.fillStyle = '#ea9d6e';
+				this.ctx.fillRect(element.posX * 32 + 4, element.posY * 32 + 4, 32 - 8, 32 - 8);
+			}
 	    }]);
 
 	    return Pathfinding;
@@ -954,7 +977,7 @@
 	    }
 
 	    /**
-	     * THIS COMPARES NODES,
+		 * THIS COMPARES NODES USING MANHATTAN DISTANCE,
 	     * THE LOWER THE SCORE, THE BETTER.
 	     * THUS:
 	     * a_score <= b_score  ----> 1,
@@ -962,8 +985,8 @@
 	     */
 
 	    _createClass(NodeScoring, [{
-	        key: "compare",
-	        value: function compare(a, b) {
+			key: "compareManhattan",
+			value: function compareManhattan(a, b) {
 	            if (a == null || b == null) {
 	                return 1;
 	            }
@@ -971,7 +994,7 @@
 	             * F = G + H,
 	             *
 	             * where F is the score, G the cost to move from starting point to the given point on the grid
-	             * and H the approximate cost to reach the destination ( f.e. Manhattan distance ):
+				 * and H the approximate cost to reach the destination:
 	             */
 				var score_a = a.cost + Math.abs(this.posFinishX - a.posX) + Math.abs(this.posFinishY - a.posY);
 				var score_b = b.cost + Math.abs(this.posFinishX - b.posX) + Math.abs(this.posFinishY - b.posY);

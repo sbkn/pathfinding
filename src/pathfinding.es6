@@ -5,6 +5,9 @@ import NodeScoring from "./nodeScoring.es6";
 
 export default class Pathfinding {
     constructor(map, unit) {
+        this.canvas = document.getElementById("gameCanvas");
+        this.ctx = this.canvas.getContext("2d");
+
         this.map = map;
         this.unit = unit;
 
@@ -31,6 +34,8 @@ export default class Pathfinding {
         // TODO this seems very not elegant
         this.nodeScoring = new NodeScoring(0, 0);
 
+        this.closedList = [];
+
         console.log("Pathfinding init done.");
     }
 
@@ -49,7 +54,7 @@ export default class Pathfinding {
         /**
          * The closed list (Nodes already checked):
          */
-        let closedList = [];
+        this.closedList = [];
 
         this.nodeScoring.posFinishX = unit.route.finish.posX;
         this.nodeScoring.posFinishY = unit.route.finish.posY;
@@ -102,8 +107,8 @@ export default class Pathfinding {
                             continue;
                         }
                         /**    Is this neighbor already done with ?:    */
-                        if (closedList != null) {
-                            tmp = closedList.find(a => (a.posX == curNode.posX + i && a.posY == curNode.posY + j));
+                        if (this.closedList != null) {
+                            tmp = this.closedList.find(a => (a.posX == curNode.posX + i && a.posY == curNode.posY + j));
                             if (tmp != null) {
                                 tmp = null;
                                 continue;
@@ -168,22 +173,22 @@ export default class Pathfinding {
                                 openList = [];
                             }
                             openList.push(tmp);
-                            //openList.sort(this.nodeScoring.compare);
-                            //openList.sort(function() { this.nodeScoring.compare(); });
+                            //openList.sort(this.nodeScoring.compareManhattan);
+                            //openList.sort(function() { this.nodeScoring.compareManhattan(); });
                             // TODO: find out why this works and what exactly it does D:
                             /** PATH SCORING: */
                             openList.sort(() => {
-                                this.nodeScoring.compare();
+                                this.nodeScoring.compareManhattan();
                             });
                         }
                     }
                 }
 
                 /**    ADD curNode TO THE closedList:    */
-                if (closedList == null) {
-                    closedList = [];
+                if (this.closedList == null) {
+                    this.closedList = [];
                 }
-                closedList.push(curNode);
+                this.closedList.push(curNode);
                 /**    REMOVE curNode FROM THE openList:    */
                 let index = openList.indexOf(curNode);
                 if (index > -1) {
@@ -205,5 +210,20 @@ export default class Pathfinding {
             }
         }
 
+    }
+
+    // draw the closedList on the canvas by calling drawClosedElement()
+    drawClosedList() {
+        if (this.closedList != null) {
+            for (var i = 0; i < this.closedList.length; i++) {
+                this.drawClosedElement(this.closedList[i]);
+            }
+        }
+    }
+
+    // draw a closed element on the canvas
+    drawClosedElement(element) {
+        this.ctx.fillStyle = '#ea9d6e';
+        this.ctx.fillRect(element.posX * 32 + 4, element.posY * 32 + 4, 32 - 8, 32 - 8);
     }
 }

@@ -29,7 +29,6 @@ export default class Draw {
                 if (map[i][j] == 1) {
                     this.ctx.fillStyle = '#6d6359';
                     this.ctx.fillRect(i * 32, j * 32, 32, 32);
-
                 }
             }
         }

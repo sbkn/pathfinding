@@ -7,13 +7,13 @@ export default class NodeScoring {
     }
 
     /**
-     * THIS COMPARES NODES,
+     * THIS COMPARES NODES USING MANHATTAN DISTANCE,
      * THE LOWER THE SCORE, THE BETTER.
      * THUS:
      * a_score <= b_score  ----> 1,
      * a_score > b_score  ----> -1
      */
-    compare(a, b) {
+    compareManhattan(a, b) {
         if (a == null || b == null) {
             return 1;
         }
@@ -21,7 +21,7 @@ export default class NodeScoring {
          * F = G + H,
          *
          * where F is the score, G the cost to move from starting point to the given point on the grid
-         * and H the approximate cost to reach the destination ( f.e. Manhattan distance ):
+         * and H the approximate cost to reach the destination:
          */
         let score_a = a.cost + Math.abs(this.posFinishX - a.posX) + Math.abs(this.posFinishY - a.posY);
         let score_b = b.cost + Math.abs(this.posFinishX - b.posX) + Math.abs(this.posFinishY - b.posY);
@@ -33,7 +33,5 @@ export default class NodeScoring {
         else {
             return -1;
         }
-
-
     }
 }
