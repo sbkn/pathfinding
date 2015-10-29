@@ -288,9 +288,11 @@
 
 	        // place the unit at the right position
 	        try {
-	            var spawnLocation = map.findFreeNode();
+				/*let spawnLocation = map.findFreeNode();
 	            this.x = spawnLocation[0];
-	            this.y = spawnLocation[1];
+				 this.y = spawnLocation[1];*/
+				this.x = 0;
+				this.y = 0;
 	        } catch (e) {
 	            console.log("NO SPAWN POSITION FOUND FOR UNIT!");
 	            this.x = -1;
@@ -302,9 +304,11 @@
 
 	        // random destination
 	        try {
-	            var destLocation = map.findFreeNode();
+				/*let destLocation = map.findFreeNode();
 	            this.destX = destLocation[0];
-	            this.destY = destLocation[1];
+				 this.destY = destLocation[1];*/
+				this.destX = 3;
+				this.destY = 0;
 	        } catch (e) {
 	            console.log("NO DEST POSITION FOUND FOR UNIT!");
 	            this.destX = -1;
@@ -321,7 +325,7 @@
 			console.log("Unit init done.");
 	    }
 
-		// drawStep it on the canvas
+		// draw it on the canvas
 
 	    _createClass(Unit, [{
 	        key: "draw",
@@ -894,9 +898,10 @@
 										//openList.sort(this.nodeScoring.compareManhattan);
 										//openList.sort(function() { this.nodeScoring.compareManhattan(); });
 										// TODO: find out why this works and what exactly it does D:
+										// TODO: compareManhattan() does not get a and b (= undefined) !!!
 										/** PATH SCORING: */
-										openList.sort(function () {
-											_this.nodeScoring.compareManhattan();
+										openList.sort(function (a, b) {
+											_this.nodeScoring.compareManhattan(a, b);
 										});
 	                                    }
 	                            }
@@ -928,7 +933,7 @@
 	            }
 	        }
 
-			// draw the closedList it on the canvas
+			// draw the closedList on the canvas by calling drawClosedElement()
 		}, {
 			key: "drawClosedList",
 			value: function drawClosedList() {
@@ -938,6 +943,8 @@
 					}
 				}
 			}
+
+			// draw a closed element on the canvas
 		}, {
 			key: "drawClosedElement",
 			value: function drawClosedElement(element) {
@@ -999,10 +1006,15 @@
 				var score_a = a.cost + Math.abs(this.posFinishX - a.posX) + Math.abs(this.posFinishY - a.posY);
 				var score_b = b.cost + Math.abs(this.posFinishX - b.posX) + Math.abs(this.posFinishY - b.posY);
 
+				score_a += -6 * Math.min(Math.abs(this.posFinishX - a.posX), Math.abs(this.posFinishY - a.posY));
+				score_b += -6 * Math.min(Math.abs(this.posFinishX - b.posX), Math.abs(this.posFinishY - b.posY));
+
 	            if (score_a > score_b) {
+					return -1;
+				} else if (score_a < score_b) {
 	                return 1;
 	            } else {
-	                return -1;
+					return 0;
 	            }
 	        }
 	    }]);

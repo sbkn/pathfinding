@@ -8,9 +8,11 @@ export default class Unit {
 
         // place the unit at the right position
         try {
-            let spawnLocation = map.findFreeNode();
+            /*let spawnLocation = map.findFreeNode();
             this.x = spawnLocation[0];
-            this.y = spawnLocation[1];
+             this.y = spawnLocation[1];*/
+            this.x = 0;
+            this.y = 0;
         } catch (e) {
             console.log("NO SPAWN POSITION FOUND FOR UNIT!");
             this.x = -1;
@@ -22,9 +24,11 @@ export default class Unit {
 
         // random destination
         try {
-            let destLocation = map.findFreeNode();
+            /*let destLocation = map.findFreeNode();
             this.destX = destLocation[0];
-            this.destY = destLocation[1];
+             this.destY = destLocation[1];*/
+            this.destX = 3;
+            this.destY = 0;
         } catch (e) {
             console.log("NO DEST POSITION FOUND FOR UNIT!");
             this.destX = -1;
@@ -41,7 +45,7 @@ export default class Unit {
         console.log("Unit init done.");
     }
 
-    // drawStep it on the canvas
+    // draw it on the canvas
     draw() {
         this.ctx.beginPath();
         this.ctx.arc(this.x * 32 + 16, this.y * 32 + 16, 12, 0, 2 * Math.PI, false);

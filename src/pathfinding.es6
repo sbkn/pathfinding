@@ -176,9 +176,10 @@ export default class Pathfinding {
                             //openList.sort(this.nodeScoring.compareManhattan);
                             //openList.sort(function() { this.nodeScoring.compareManhattan(); });
                             // TODO: find out why this works and what exactly it does D:
+                            // TODO: compareManhattan() does not get a and b (= undefined) !!!
                             /** PATH SCORING: */
-                            openList.sort(() => {
-                                this.nodeScoring.compareManhattan();
+                            openList.sort((a, b) => {
+                                this.nodeScoring.compareManhattan(a, b);
                             });
                         }
                     }
@@ -209,7 +210,6 @@ export default class Pathfinding {
                 iteCnt++;
             }
         }
-
     }
 
     // draw the closedList on the canvas by calling drawClosedElement()

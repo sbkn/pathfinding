@@ -26,12 +26,16 @@ export default class NodeScoring {
         let score_a = a.cost + Math.abs(this.posFinishX - a.posX) + Math.abs(this.posFinishY - a.posY);
         let score_b = b.cost + Math.abs(this.posFinishX - b.posX) + Math.abs(this.posFinishY - b.posY);
 
+        score_a += (-6) * Math.min(Math.abs(this.posFinishX - a.posX), Math.abs(this.posFinishY - a.posY));
+        score_b += (-6) * Math.min(Math.abs(this.posFinishX - b.posX), Math.abs(this.posFinishY - b.posY));
 
         if (score_a > score_b) {
             return 1;
         }
-        else {
+        else if (score_a < score_b) {
             return -1;
+        } else {
+            return 0;
         }
     }
 }
